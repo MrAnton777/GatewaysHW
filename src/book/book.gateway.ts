@@ -25,11 +25,27 @@ export class BookGateway {
   }
   
   @SubscribeMessage('getAllComments')
-  getAllComments(
+  async getAllComments(
     @MessageBody() data
     ){
       let {id} = data
-      return this.service.findAllBookComment(id)
+      let comments = await this.service.findAllBookComment(id)
+      let result:string[] = []
+      comments.forEach((el)=>{
+        result.push(el.comment)
+      })
+
+      this.server.emit('getAllCommentsResponse',result)
+    }
+
+    @SubscribeMessage('addComment')
+    async addComment(
+      @MessageBody() data
+    ){
+      let{bookId,comment} = data
+      await this.service.create({bookId,comment}).then(()=>{
+        this.server.emit('New comment created')}
+      )
     }
 
 }

@@ -16,7 +16,9 @@ export class BookService {
     }
 
     public async findAllBookComment(id:string):Promise<CommentDocument[]>{
-        return await this.CommentModel.find({bookId:id})
+        const comments = await this.CommentModel.find({ bookId: id });
+
+        return comments;
 }       
 
 
@@ -25,7 +27,8 @@ export class BookService {
     }
 
     public async create(data:CommentDto):Promise<CommentDocument>{
-        let comment = (await this.CommentModel.create(data)).save()
+        let comment = (await this.CommentModel.create(data))
+        comment.save()
 
         return comment
     }
